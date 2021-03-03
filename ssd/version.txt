@@ -1,0 +1,30 @@
+v01:
+计算AP:
+    mAP_iou_thres_list = [0.3, 0.5, 0.75]
+    数据集FDDB+WIDER：
+    FINISH get all_is_tps from datasets train 15693 pics.
+    datasets train - num of pred boxes: 414760.
+    train APs: [0.7614628748518877, 0.589232191464523, 0.05551217897844008]
+    train mAP: 46.87%
+    FINISH get all_is_tps from datasets test 3254 pics.
+    datasets test - num of pred boxes: 96133.
+    test APs: [0.7295295162869464, 0.5281196245908734, 0.0287837829672598]
+    test mAP: 42.88%
+    数据集FDDB：
+    FINISH get all_is_tps from datasets train 2817 pics .
+	datasets train - num of pred boxes: 30458.
+	train APs: [0.9613476615047343, 0.9225924060298433, 0.4710170875387208]
+	train mAP: 78.50%
+	FINISH get all_is_tps from datasets test 28 pics .
+	datasets test - num of pred boxes: 284.
+	test APs: [0.9925765346097878, 0.9761006095178202, 0.6452126654902874]
+	test mAP: 87.13%
+    数据集WIDER：
+    FINISH get all_is_tps from datasets train 12876 pics .
+	datasets train - num of pred boxes: 386090.
+	train APs: [0.7436146241931066, 0.5571756661891637, 0.029737076836144256]
+	train mAP: 44.35%
+	FINISH get all_is_tps from datasets test 3226 pics .
+	datasets test - num of pred boxes: 96215.
+	test APs: [0.7289274624657174, 0.5254247361729657, 0.027534528879235326]
+	test mAP: 42.73%

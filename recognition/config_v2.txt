@@ -1,0 +1,53 @@
+不做任何改动，在v1的基础上再继续训练。学习率使用v1最终的学习率不变。
+SUCCEED: restore from ../record/mdoels/v01-99
+----------------------------------------------------------------------------------------------------
+USER arguments:
+network: darknet_53
+dataset: faces
+loss: combind0
+initializer: xavier
+optimizer: momentum
+version: 02
+restore_version: 01-99
+batch_size: 32
+epochs: 100
+max_lr: 0.001
+lr_decay: cosine
+keep_prob: 0.7
+model_dir: ../record/mdoels/
+log_dir: ../record/logs/v02/
+gen_pic_dir: ../record/gen_pics/v02/
+----------------------------------------------------------------------------------------------------
+TRAIN config:
+img_size: 128
+regularizer: None
+regular_factor: 0
+embedding_size: 512
+act_type: leaky_relu
+initializer: xavier
+optimizer: momentum
+optimizer_name: MomentumOptimizer
+momentum: 0.9
+network: darknet_53
+net_name: darknet
+num_layers: 53
+base_filter: 16
+dataset: faces
+dataset_name: faces
+num_cls: 284
+num_train_pics: 13790
+num_test_pics: 4595
+loss: combind0
+loss_name: margin_loss
+loss_s: 64
+loss_m1: 1
+loss_m2: 0.3
+loss_m3: 0.2
+----------------------------------------------------------------------------------------------------
+EPOCH: 99/100 BATCH: 429/430 step: 85999.0 cum_acc: 67.676% - acc: 68.750% mean_angle1: 65.267 mean_angle2: 91.162 loss: 26.026	succeed save model into ../record/mdoels/v02
+TEST - acc: 47.656% mean_angle1: 62.835 mean_angle2: 91.076 loss: 27.027
+----------------------------------------------------------------------------------------------------
+train: num: 13790 acc: 82.995% mean_angles1: 58.218 mean_angles2: 91.184
+test: num: 4595 acc: 45.724% mean_angles1: 65.701 mean_angles2: 91.458
+
+

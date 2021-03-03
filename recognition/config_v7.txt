@@ -1,0 +1,65 @@
+从头开始训练，使用论文推荐的arcface loss参数，不使用focal loss，id_size=128
+
+----------------------------------------------------------------------------------------------------
+USER arguments:
+network: darknet_53
+dataset: faces
+loss: combind0
+initializer: xavier
+optimizer: momentum
+version: 07
+restore_version: 07-199
+batch_size: 32
+epochs: 150
+max_lr: 0.0001
+end_epoch: 100
+lr_decay: cosine
+keep_prob: 0.7
+model_dir: ../record/mdoels/
+log_dir: ../record/logs/v07/
+gen_pic_dir: ../record/gen_pics/v07/
+----------------------------------------------------------------------------------------------------
+TRAIN config:
+img_size: 128
+regularizer: None
+regular_factor: 0
+embedding_size: 128
+act_type: leaky_relu
+focal_loss_alpha: 0
+focal_loss_gamma: 0
+initializer: xavier
+optimizer: momentum
+optimizer_name: MomentumOptimizer
+momentum: 0.9
+network: darknet_53
+net_name: darknet
+num_layers: 53
+base_filter: 16
+dataset: faces
+dataset_name: faces
+num_cls: 284
+num_train_pics: 13854
+num_test_pics: 4531
+loss: combind0
+loss_name: margin_loss
+loss_s: 64
+loss_m1: 1
+loss_m2: 0.3
+loss_m3: 0.2
+----------------------------------------------------------------------------------------------------
+EPOCH: 149/150 BATCH: 431/432 step: 64799.0 cum_acc: 56.843% - acc: 50.000% mean_angle1: 72.053 mean_angle2: 86.925 loss: 18.313	succeed save model into ../record/mdoels/v07
+TEST - acc: 25.000% mean_angle1: 75.408 mean_angle2: 86.993 loss: 14.371
+----------------------------------------------------------------------------------------------------
+train: num: 13854 acc: 58.864% mean_angles1: 69.418 mean_angles2: 87.004
+K=0.588
+----------------------------------------------------------------------------------------------------
+test: num: 4531 acc: 22.269% mean_angles1: 75.413 mean_angles2: 86.927
+K=0.222
+----------------------------------------------------------------------------------------------------
+thresh=0.2: acc=66.800%, p=0.688, r=0.614, fpr=0.278
+below_fpr=0.001: acc_fpr=50.060%, p_fpr=0.714, r_fpr=0.002, thresh_fpr=0.939
+
+
+
+
+

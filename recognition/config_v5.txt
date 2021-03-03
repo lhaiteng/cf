@@ -1,0 +1,57 @@
+从头开始训练，使用论文推荐的arcface loss参数，不使用focal loss，id_size=128
+
+----------------------------------------------------------------------------------------------------
+USER arguments:
+network: darknet_53
+dataset: faces
+loss: combind0
+initializer: xavier
+optimizer: momentum
+version: 05
+restore_version: 05-00
+batch_size: 32
+epochs: 200
+max_lr: 0.001
+end_epoch: 100
+lr_decay: cosine
+keep_prob: 0.7
+model_dir: ../record/mdoels/
+log_dir: ../record/logs/v05/
+gen_pic_dir: ../record/gen_pics/v05/
+----------------------------------------------------------------------------------------------------
+TRAIN config:
+img_size: 128
+regularizer: None
+regular_factor: 0
+embedding_size: 128
+act_type: leaky_relu
+focal_loss_alpha: 0
+focal_loss_gamma: 0
+initializer: xavier
+optimizer: momentum
+optimizer_name: MomentumOptimizer
+momentum: 0.9
+network: darknet_53
+net_name: darknet
+num_layers: 53
+base_filter: 16
+dataset: faces
+dataset_name: faces
+num_cls: 284
+num_train_pics: 13790
+num_test_pics: 4595
+loss: combind0
+loss_name: margin_loss
+loss_s: 64
+loss_m1: 1
+loss_m2: 0.3
+loss_m3: 0.2
+----------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+

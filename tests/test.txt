@@ -1,0 +1,62 @@
+test22  目标检测中使用iou或giou作为回归损失
+test21  carafe上采样
+test21_1    验证使用np把通道拉成平面(carafe上采样得到卷积核)
+test21_2    验证使用tf通道拉成平面(carafe上采样得到卷积核)，并检查能否反向传播
+test20  验证公考-资料分析中的现期和差、混合增长率、比重之差的问题
+test19  对gt框聚类得到先验框长宽
+test19_1  别人的例子：对gt框聚类得到先验框长宽
+test18  保存全部变量，只读取部分变量
+test17  网上得来的TFRecord用法
+test17_1    自己试验创建和使用TFRecord的用法
+test17_2    使用二进制创建和读取TFRecord图片数据
+test16  tf数据集tf.data
+test15  测试写prelu
+        => perlu3与手算结果一致
+test14  测试使用tf.variable_scope统一定义初始化器
+        => scope改变其作用域下的变量默认初始化器，不影响变量自定义初始化器
+test13  tf.train.ExponentialMovingAverage权重滑动平均更新的使用
+        => 他只是创造出待apply的var_list的shadow_var，
+        => 并在每次apply时，根据那一时刻的var值，更新shadow_var，并不会影响var值
+test12  如何使用training写滑动平均
+test11  SSD的标签、掩码，以及损失函数构建的测试代码
+test10  时间消耗对比 - gather和掩码点乘
+        => 时间相同
+test9   对数据集中的多分类，提取部分样本进行计算
+        => 下标+gather和掩码+点乘的结果相同
+test9_1 对比二分类focal loss，包含正负样本+背景
+        => 下标+gather和掩码+点乘的结果相同
+test8   如何使用plot保存图片。保存的与plt画出的一致，类似截图。
+test7   在ssd中，几种计算P、TP的时间消耗对比
+test6   对比不同s、theta下的arcface概率和损失
+test6_1 不同参数下的focal loss以及求导的结果区别
+        alhpa作为乘积项，不参与对p求导，视为调节因子，可取1进行对比
+        从不同夹角到最后的focal loss或ce loss，即theta - p - loss，并最只用对theta求导
+        => 对p在求theta前或后+1e-6很敏感。在test62.py中使用tensorflow帮助求导
+test6_2 不同参数下的focal loss以及求导的结果区别
+        alhpa作为乘积项，不参与对p求导，视为调节因子，可取1进行对比
+        使用tensorflow帮助求focal loss或ce loss对p、theta的导数，即theta - p - loss
+        => 跟自己写公式的结果类似，p需要+1e-6
+test6_3 不同alpha、gamma下的focal loss求导结果
+        => alpha=0.75, gamma=2, 在p小时导数与ce接近，p大时能拉开差距
+test6_4 对arcface参数调试
+        ce/fl对p求导，发现前期变化大，后期变化小
+        所以夹角对p的影响，也是前期变化大，后期变化小？
+        => m1, m2, m3, s = 1.1, 0.15, 0.15, 24
+test5   程序写的有问题，看test52和53
+        对比计算focal loss时，使用tf.gather和tf.reduce_sum得到的p，在优化时是否得到相同结果。
+        => 结果完全不一样！还是使用tf.gather比较靠谱吧，使用sum在反向传播时会涉及到其他几类吧！
+test5_1 验证自动计算的交叉熵，和为了计算focal loss手动计算的交叉熵。
+        => 结果相同
+        => 但还需要验证反向传播是否相同
+test5_2 验证tf内置计算的交叉熵，和几种手动计算的反向传播结果是否相同。
+        => 训练时，都与tf内置的计算结果不同
+        => 但手动计算的全部相同，无论是gather获取下标、使用独热编码乘p再reduce_mean什么的！
+test5_3 对比不同方式求多分类focal loss和二分类focal loss
+        => 无论是使用gahter获取下标得到p, 使用reduce_sum得到p, 还是配合掩码点对点相乘，结果都一致！
+        => 但如果使用上述手段获取p，使用tf内置函数计算交叉熵损失，得到的结果与上述不同
+        => 归根结底还是自己计算交叉熵损失与tf内置的计算不同
+test4   不同尺寸的原始图片和不同batch_size下，arcface占用显存计算
+test3   iou和giou的对比
+        gt 100x100，保持iou不变，改变预测框位置
+test2   测试tf进行全局池化，以及现图片分辨率经过resnet不加全局池化前特征图尺寸
+test1   测试lr曲线只使用1个cycle stage

@@ -1,0 +1,69 @@
+从头开始训练，使用论文推荐的arcface loss参数，不使用focal loss，id_size=512
+
+----------------------------------------------------------------------------------------------------
+USER arguments:
+network: darknet_53
+dataset: faces
+loss: combind0
+initializer: xavier
+optimizer: momentum
+version: 06
+restore_version: 06-00
+batch_size: 32
+epochs: 200
+max_lr: 0.001
+end_epoch: 100
+lr_decay: cosine
+keep_prob: 0.7
+model_dir: ../record/mdoels/
+log_dir: ../record/logs/v06/
+gen_pic_dir: ../record/gen_pics/v06/
+----------------------------------------------------------------------------------------------------
+TRAIN config:
+img_size: 128
+regularizer: None
+regular_factor: 0
+embedding_size: 512
+act_type: leaky_relu
+focal_loss_alpha: 0
+focal_loss_gamma: 0
+initializer: xavier
+optimizer: momentum
+optimizer_name: MomentumOptimizer
+momentum: 0.9
+network: darknet_53
+net_name: darknet
+num_layers: 53
+base_filter: 16
+dataset: faces
+dataset_name: faces
+num_cls: 284
+num_train_pics: 13790
+num_test_pics: 4595
+loss: combind0
+loss_name: margin_loss
+loss_s: 64
+loss_m1: 1
+loss_m2: 0.3
+loss_m3: 0.2
+----------------------------------------------------------------------------------------------------
+EPOCH: 199/200 BATCH: 429/430 step: 85999.0 cum_acc: 99.963% - acc: 100.000% mean_angle1: 43.869 mean_angle2: 90.141 loss: 3.028	succeed save model into ../record/mdoels/v06
+TEST - acc: 50.000% mean_angle1: 65.975 mean_angle2: 90.072 loss: 27.901
+----------------------------------------------------------------------------------------------------
+train: num: 13790 acc: 99.971% mean_angles1: 38.794 mean_angles2: 90.154
+----------------------------------------------------------------------------------------------------
+test: num: 4595 acc: 53.689% mean_angles1: 64.795 mean_angles2: 90.073
+----------------------------------------------------------------------------------------------------
+train
+K=1.000
+----------------------------------------
+test
+K=0.536
+----------------------------------------
+
+
+
+
+
+
+

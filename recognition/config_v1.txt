@@ -1,0 +1,51 @@
+----------------------------------------------------------------------------------------------------
+USER arguments:
+network: darknet_53
+dataset: faces
+loss: combind0
+initializer: xavier
+optimizer: momentum
+version: 01
+restore_version: 01-99
+batch_size: 32
+epochs: 100
+max_lr: 0.001
+lr_decay: cosine
+keep_prob: 0.7
+model_dir: ../record/mdoels/
+log_dir: ../record/logs/v01/
+gen_pic_dir: ../record/gen_pics/v01/
+----------------------------------------------------------------------------------------------------
+TRAIN config:
+img_size: 128
+regularizer: None
+regular_factor: 0
+embedding_size: 512
+act_type: leaky_relu
+initializer: xavier
+optimizer: momentum
+optimizer_name: MomentumOptimizer
+momentum: 0.9
+network: darknet_53
+net_name: darknet
+num_layers: 53
+base_filter: 16
+dataset: faces
+dataset_name: faces
+num_cls: 284
+num_train_pics: 13790
+num_test_pics: 4595
+loss: combind0
+loss_name: margin_loss
+loss_s: 64
+loss_m1: 1
+loss_m2: 0.3
+loss_m3: 0.2
+----------------------------------------------------------------------------------------------------
+EPOCH: 99/100 BATCH: 429/430 step: 42999.0 cum_acc: 62.062% - acc: 78.125% mean_angle1: 68.647 mean_angle2: 91.766 loss: 27.553	succeed save model into ../record/mdoels/v01
+TEST - acc: 48.438% mean_angle1: 69.496 mean_angle2: 92.474 loss: 27.685
+----------------------------------------------------------------------------------------------------
+train: num: 13790 acc: 77.941% mean_angles1: 62.867 mean_angles2: 91.711
+test: num: 4595 acc: 44.353% mean_angles1: 68.656 mean_angles2: 91.990
+
+

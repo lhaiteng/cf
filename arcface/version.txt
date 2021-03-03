@@ -1,0 +1,167 @@
+41 - resnet_filters_base = 32 -> batch=32
+     num_batch_expand = 2  即每个epoch的num_batch扩大2倍
+     =>
+40 - id_size=64
+     arcface_para: scale_end=32
+     => 考虑把每个epoch的num_batch扩大成2倍，加上数据增强相当于数据集扩大了2倍。
+     => FINISH: datasets: train ACC: 97.503% SIM: 0.914
+     => FINISH: datasets: test ACC: 40.359% SIM: 0.611
+     => 与v38类似，train的非标签夹角40的概率密度也达到了0.0025。应该在v37的基础上改进。
+39 - id_size=128
+     提高数据增强prob=0.2->0.5
+     => EPOCH 88/100 BATCH 171/256 cum_acc 17.971% - acc=0.000% theta=nan untheta=nan
+     => EPOCH 87/100 BATCH 255/256 cum_acc 21.469% - acc=20.312% theta=4.848 untheta=24.744
+     => 非常之差
+38 - id_size = 64
+     resnet_filters_base = 16 -> train_batch_size=64
+     resnet第一步改回c7s2+池化
+     => FINISH: datasets: train ACC: 99.560% SIM: 0.956
+     => FINISH: datasets: test ACC: 35.526% SIM: 0.624
+     => 如果查看夹角分布，发现unlabel的夹角也有不少很小的，应是w区分度不足，先把id_size调回128。
+     => 这样其实softmax结果不是很大，损失并没有降下来。
+     => 而test准确率低，应该提高数据增强效果。
+37 - l1_loss_factor_id = 0, l1_loss_factor_w = 0  观察发现prenormed_id很接近0
+     center_loss_factor = 5e-1  使ct_loss与arc_loss接近或低一个数量级。
+     => FINISH: datasets: train ACC: 99.982% SIM: 0.937
+     => FINISH: datasets: test ACC: 38.416% SIM: 0.456
+     => 过拟合还是很严重啊
+36 - 不使用focal loss
+     => FINISH: datasets: train ACC: 99.915% SIM: 0.917
+     => FINISH: datasets: test ACC: 41.056% SIM: 0.42
+35 - 在arcface_loss的focal loss环节求tf.logp(p)前，令p = tf.maximum(p, 1e-9)
+     center_loss_factor = 5e-3
+     l1_loss_factor_id = l1_loss_factor_w = 5e-4
+     => FINISH: datasets: train ACC: 98.889% SIM: 0.87
+     => FINISH: datasets: test ACC: 40.458% SIM: 0.338
+     => 把fl改回来。因为发现手动计算交叉熵损失和tf内置的，在反向传播问题上有所不同。见test5.py系列
+34 - center_loss_factor = 1e-3  并使用论文作者代码的方式，返回centers并重复引用
+     => FINISH: datasets: train ACC: 99.982% SIM: 0.806
+     => FINISH: datasets: test ACC: 42.281% SIM: 0.315
+     => 没有实质性改变啊。
+     => 分析tensorboard:
+     => arcface_loss~[2,10], ct_loss~[2e-3,8e-3], l1_loss_id~[0.02, 0.025], l1_loss_w=0.018
+     => total_loss~[2~10]。是不是参数取得太小了？
+33 - l1_loss_factor_id = l1_loss_factor_w = 1e-4
+     => 到70代之后，多次出现theta=nan untheta=nan   Nan in summary histogram for: cls_weight_unnormed
+     => FINISH: source: train ACC: 99.969% SIM: 0.801
+     => FINISH: source: test ACC: 40.687% SIM: 0.312
+     => 照旧是过拟合严重
+32 - resnet_filters_base=32 train_batch_size=32
+     max_lr = 0.01 {'start_lr': max_lr / 100, 'lr': max_lr, 'end_lr': max_lr / 10, ...}
+     => datasets: train acc: 99.982% sim: 0.825.
+     => datasets: test acc: 45.414% sim: 0.343.
+     => 训练集的sim尚可这回是过拟合了吧。。
+31 - 降低数据增强。prob=0.7->0.2
+     => EPOCH 93/100 BATCH 2047/2048 cum_acc 93.427% - acc=87.500% theta=43.538 untheta=90.282
+     => 后面theta变nan了， Nan in summary histogram for: cls_weight_unnormed
+     => source: train ACC: 99.908% SIM: 0.621  source: test ACC: 34.114% SIM: 0.157
+30 - id size=128
+     => source: train ACC: 99.957%  source: test ACC: 40.474%
+     => 开始test的标签夹角均值在50附近，后面慢慢变大，到了60附近，最后到了80多。。
+     => 求余弦相似度时，哪怕同出训练集或测试集，其相似度也不高
+     => 模型不是训练好了，是变的过拟合了。
+29 - 变量的初始化器(0, 0.02) -> (0, 0.2)
+     id size=256
+     => source: train ACC: 99.951%  source: test ACC: 40.675%
+     => 泛化能力依然不行
+28 - lr_end = 0.005
+     arcface参数：s=2-64
+     => EPOCH 99/100 BATCH 2056/2057 - acc=1.000 theta=0.952 untheta=1.574
+     => 测试集 64 个数据 准确率 0.359375 标签项夹角 1.2166507 非标签夹角 1.5715889
+     => train ACC: 0.919  source: test ACC: 0.362
+     => 模型的泛化能力依然很差
+27 - 降低样本类别不平衡，尽量使每个类别样本50~80，再使用数据增强补充数据集至60
+     lr_end = 0.002
+     全局池化使用tf.reduce_mean实现
+     => 准确率不增加因为用角度求acc要取min，取错了。如果用cosin要取max
+     => EPOCH 99/100 BATCH 2056/2057 - acc=0.875 theta=0.892 untheta=1.563
+     => train ACC: 0.897  test ACC: 0.365
+26 - arcface参数：s=2-32, m2=0.3
+     对focal loss的获得进行改动，p = softmax*labels_onehot再reduce_sum -> tf.gather
+     => EPOCH 55/100 BATCH 1668/1853 step 103583.0 - acc=0.000 theta=0.703 untheta=1.298
+     => 为什么准确率不会增加呢
+25 - arcface参数：s=2-64, m2=0.5
+     => EPOCH 54/100 BATCH 318/1853 step 100380.0 - acc=0.000 theta=0.020 untheta=0.132
+24 - 清洗图片集
+     引入focal loss, gamma = 2
+     => EPOCH 70/100 BATCH 282/1853 step 129992.0 - acc=0.000 theta=0.922 untheta=1.570
+     => 训练集和验证集的准确率一直是0。又计算了不同s下的softmax概率和ce、fl，应该还是s取太小了
+23 - unformed_cls_weight的初始化使用random_normal()
+     计算theta时，采用论文代码，直接用prelogit_id与normed_weight乘，再除prelogit的欧式范数
+     => EPOCH 99/100 BATCH 2107/2108 step 210799.0 - acc=0.750 theta=0.866 untheta=1.571
+     => source: train ACC: 0.981
+     => source: test ACC: 0.209
+22 - resnet_filters_base = 64
+     train_batch_size = 8
+     => 到30步左右仍然是theta和untheta都降低，而acc仍然较低
+     => 是否考虑强制令w正交化？
+21 - cnn_shape = 128
+     id size = 512
+     resnet_filters_base = 32
+     train_batch_size = 32
+     => EPOCH 99/100 BATCH 526/527 step 52699.0 - acc=0.250 theta=0.076 untheta=0.573
+     => 依旧是有些欠拟合
+20 - id size = 512
+     resnet layers = (3, 4, 6, 3)
+     => EPOCH 43/100 BATCH 341/527 step 23002.0 - acc=0.000 theta=0.085 untheta=0.353
+19 - id size改回512
+     resnet layers = (2, 2, 2, 2)
+     => EPOCH 17/200 BATCH 32/527 step 8991.0 - acc=0.094 theta=0.965 untheta=1.522
+     => 测试集 256 个数据，准确率 0.05078125，标签项夹角 1.0202807，非标签夹角 1.51713
+     => 应当是模型复杂度不够，造成无法区分图片？
+18 - 更改arcface_para参数的上涨周期和终止大小
+     降低图片维度至64，改resnet第一个c7s2+池化为一个c7s2+c3s2 -> 计算显存，确定batch_size数量
+     id size降至256
+     => EPOCH 22/200 BATCH 460/527 step 12054.0 - acc=0.031 theta=0.830 untheta=1.285
+17 - 改参数s为2-16
+     => EPOCH 70/100 BATCH 579/2108 step 148139.0 - acc=0.750 theta=0.718 untheta=1.586
+     => 测试集 64 个数据  准确率 0.265625  标签项夹角 1.086038  非标签夹角 1.5794984
+     => 对test_face1中未出现过的图片辨识度极差，泛化能力极差，也许是过拟合？
+16 - arcface_para的起步阶段改为warm_up_stage + decay_steps // 2
+     unformed_cls_weight的初始化使用random_uniform(-1, 1)
+     resnet的结束不使用tf.keras.layers.GlobalAveragePooling2D()(x)，
+     而使用tf.layers.average_pooling2d(x, x.shape[1:3], x.shape[1:3], padding='valid')
+     参数s也是从小到大变化
+     => EPOCH 17/100 BATCH 2107/2108 - acc=0.125 theta=1.352 untheta=1.571
+     => 之后untheta和theta都降低
+     => EPOCH 35/100 BATCH 107/2108 - acc=0.250 theta=0.948 untheta=1.401
+15 - 取消center loss
+     arcface_para在warm_up_stage后达到最大值
+     => EPOCH 37/200 BATCH 1972/2284 - acc=0.125 theta=2.849 untheta=2.934
+     => 是在arcface_para达到最大阶段之后开始反包的。若设置1阶段后最大，则1阶段反包。可能太快达到最大了？
+14 - lr的cycle_stage=1
+     不使用滑动平均tf.train.ExponentialMovingAverage进行更新参数
+     => EPOCH 11/200 BATCH 1512/2284 - acc=0.000 theta=1.572 untheta=1.573
+13 - id_size改回512
+     => EPOCH 11/200 BATCH 2097/2284 - acc=0.125 theta=1.525 untheta=1.573没有太大改变
+12 - 更改center loss的计算方式，把center_op重复利用，取消center的更新阶段直接计算loss
+     => theta降不下去EPOCH 70/200 BATCH 2044/2284 - acc=0.000 theta=1.556 untheta=1.619
+11 - 不使用l1 loss
+     => EPOCH 27/200 BATCH 814/2284 - acc=0.000 theta=1.575 untheta=1.580
+     => 计算center loss之前的步骤，theta走势正常，计算center loss之后就在1.57附近了
+10 - 使用l1 loss和center loss，使用tf.cond在stage前只更新center之后再加入计算center loss
+     提高lr的上下限
+     => EPOCH 29/200 BATCH 1713/2284 - acc=0.000 theta=1.585 untheta=1.591  吐了
+09 - 不使用l1 loss和center loss
+     => EPOCH 30/200 BATCH 791/2284 - acc=0.250 theta=1.220 untheta=1.547
+08 - id_size降至128
+     继续使用l1 loss和center loss
+     => 近30代仍theta=1.583 untheta=1.586
+07 - 不使用center loss
+     => 40多代后untheta仍然会一直降低
+06 - 重新搜索cn、kr图片，提取人脸
+     在warm_up+decay_steps阶段使m1 m2 m3达到最终数值，之后不变
+     l1 loss对prelogits和unnormed_cls_weight来求
+     使用center loss
+     => 在40多代时，theta=1.068 untheta=1.543。为什么untheta会降低呢？
+05 - 之前的resnet网络竟然只循环了block，每个block中的layer竟然没有循环多次。惨。
+     不在显存中保存多个batch梯度的均值更新权重。
+     去掉多gpu等花里胡哨的东西。
+     标签把所有的文件夹路径随机一下， 这样cn和jp的不会分成两部分
+04 - 重新提取脸部，不进行区域扩大
+     加入lr的cosine衰减
+     加入权重滑动更新tf.train.ExponentialMovingAverage
+     arcface的参数根据原论文中m1=0，m2=0.5，m3=0进行训练
+     引入prelogit l1 loss    ==>  prelogits 未 L2 norm 的 face id
+     引入prelogit center loss    ==>  prelogits 未 L2 norm 的 face id
+03 - 删去了两边都小于128的图片
